@@ -1,1 +1,55 @@
+<html><head>
+<style>
+form.has-advanced-upload {
+  background-color: white;
+  outline: 2px dashed black;
+  outline-offset: -10px;
+}
+form.has-advanced-upload  {
+  display: inline;
+}
+</style>
+</head><body>
 test
+<form action="/nonesuch"
+  enctype="multipart/form-data"
+  method="post"
+  ondrop="dropped(event)"
+  onsubmit="submitted"
+>
+  <div>
+    Choose a PDB or mmCIF file to process. Specify it one of these ways:
+    <ul>
+      <li>Drag it here</li>
+    <li><input type="file" name="pdbfile" size="40"
+      accept="chemical/pdb,chemical/x-mmcif"
+      value="Browse..." /></li>
+    <li title="TODO this does not work yet"><input id="pdbcode" placeholder="3isw" size="4" /> from PDB/PDB-REDO </li>
+    </ul>
+ </div>
+   <input type="submit" />
+</form>
+<script>
+// see https://css-tricks.com/drag-and-drop-file-uploading/
+// and https://www.w3.org/TR/FileAPI/
+var isAdvancedUpload = function() {
+  var div = document.createElement('div');
+  return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+}();
+if (isAdvancedUpload) {
+  // ...
+}
+function dropped(event) {
+  var files = event.originalEvent.dataTransfer.files;
+  for (var i = 0, f; f = files[i]; i++) {
+    // Read the File objects in this FileList.
+  }
+  e.preventDefault();
+  e.stopPropagation();
+}
+function submitted(event) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+</script>
+</body></html>
