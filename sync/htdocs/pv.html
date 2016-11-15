@@ -4,7 +4,12 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 </head>
 <body>
-  test pv
+  Load from PDB: <input id="pdbid" title="PDB id" placeholder="1r6a"
+    onchange="loadPdbFile('http://files.rcsb.org/view/'+this.value+'.pdb')"
+  />
+  Load from PDB-REDO: <input id="pdbid" title="PDB id" placeholder="1r6a"
+    onchange="loadFromRedo(this.value)"
+  />
 <div id=viewer ></div>
 </body>
 <script type='text/javascript' src='https://cdn.rawgit.com/biasmv/pv/master/bio-pv.min.js'></script>
@@ -35,22 +40,30 @@ function show(pdb) {
   }); */
 }
 
+function loadFromRedo(pdbid) {
+  loadPdbFile('http://www.cmbi.ru.nl/pdb_redo/'
+  +pdbid.substring(1,3)+'/'
+  +pdbid+'/'+pdbid+'_final.pdb')
+}
 
-function loadPV() {
+
+function loadPdbFile(url) {
   var rq = new XMLHttpRequest();
-  var pdbId='1r6a';
-  rq.open("GET", 'http://files.rcsb.org/view/'+pdbId+'.pdb');
+  rq.open("GET",url);
 
-  rq.addEventListener("error",function(event) {alert('Sorry, unable to load that structure: '+event)})
+  rq.addEventListener("error",function(event) {alert('Sorry, unable to load: '+url+event)})
   rq.addEventListener("load",function(event) {
+  if (200==rq.status) {
     show(rq.responseText);
+  } else {
+    alert('Sorry, response: '+rq.status+' when trying to get: '+url);
+  }
   });
   rq.send()
 
 }
 
-// load the methyl transferase once the DOM has finished loading. That's
+// load  once the DOM has finished loading. That's
 // the earliest point the WebGL context is available.
-document.addEventListener('DOMContentLoaded', loadPV);
 </script>
 </html>
