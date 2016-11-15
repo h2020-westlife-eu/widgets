@@ -4,7 +4,8 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 </head>
 <body>
-  Get a PDB file, one of these ways:
+  <!-- file selection widget starts -->
+  Choose a PDB file, one of these ways:
 <ul ondrop="dropped(event)"
    ondragover="event.preventDefault(); event.dataTransfer.dropEffect = 'copy';"
    >
@@ -44,7 +45,7 @@ var viewer = pv.Viewer(document.getElementById('viewer'), options);
 function readPdb(file) {
   var reader = new FileReader();
   reader.onerror = function (event) {alert('Sorry, unable to read file: '+event);}
-  reader.onload = function(e) {show( e.target.result ); };
+  reader.onload = function(e) {process( e.target.result ); };
   reader.readAsText(file);
 }
 
@@ -57,7 +58,11 @@ function dropped(event) {
 
 
 // given the contents of a PDB file, show the structure
-function show(pdb) {
+// note: change the implemenation of this to make an upload widget
+function process(pdb) {
+
+  // load  once the DOM has finished loading. That's
+  // the earliest point the WebGL context is available.
   var structure = pv.io.pdb(pdb);
   viewer.cartoon('protein', structure, { color : color.ssSuccession() });
   viewer.centerOn(structure);
@@ -83,7 +88,7 @@ function loadPdbFile(url) {
   rq.addEventListener("error",function(event) {alert('Sorry, unable to load: '+url+event)})
   rq.addEventListener("load",function(event) {
   if (200==rq.status) {
-    show(rq.responseText);
+    process(rq.responseText);
   } else {
     alert('Sorry, response: '+rq.status+' when trying to get: '+url);
   }
@@ -92,7 +97,7 @@ function loadPdbFile(url) {
 
 }
 
-// load  once the DOM has finished loading. That's
-// the earliest point the WebGL context is available.
 </script>
+
+  <!-- file selection widget ends -->
 </html>
