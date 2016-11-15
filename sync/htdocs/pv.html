@@ -4,13 +4,21 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 </head>
 <body>
-  Load from PDB: <input id="pdbid" title="PDB id" placeholder="1r6a"
+  Get a PDB file, one of these ways:
+<ul>
+  <li>Load from PDB: <input id="pdbid" title="PDB id" placeholder="1r6a"
     onchange="loadPdbFile('http://files.rcsb.org/view/'+this.value+'.pdb')"
-  />
-  Load from PDB-REDO: <input id="pdbid" title="PDB id" placeholder="1r6a"
+  /></li>
+  <li>Load from PDB-REDO: <input id="pdbid" title="PDB id" placeholder="1r6a"
     onchange="loadFromRedo(this.value)"
-  />
+  /></li>
+  <li><input id="fileElem" type="file" onchange="readPdb(this.files[0])" style="display:none" />
+    <label for="fileElem">Browse...</label>
+  </li>
+</ul>
+<div ondrop="dropped(event)">TODO Drag a file here.</div>
 <div id=viewer ></div>
+<a href="http://superuser.com/questions/836832/how-can-i-enable-webgl-in-my-browser">How to enable WebGL</a>
 </body>
 <script type='text/javascript' src='https://cdn.rawgit.com/biasmv/pv/master/bio-pv.min.js'></script>
 <script type='text/javascript'>
@@ -26,6 +34,21 @@ var options = {
 var viewer = pv.Viewer(document.getElementById('viewer'), options);
 </script>
 <script type='text/javascript'>
+
+function readPdb(file) {
+  var reader = new FileReader();
+  reader.onerror = function (event) {alert('Sorry, unable to read file: '+event);}
+  reader.onload = function(e) {show( e.target.result ); };
+  reader.readAsText(file);
+}
+
+function dropped(event) {
+  event.stopPropagation();
+  event.preventDefault();
+  var dt = event.dataTransfer;
+  var files = dt.files;
+  redPdb(files[0]);
+}
 
 // given the contents of a PDB file, show the structure
 function show(pdb) {
