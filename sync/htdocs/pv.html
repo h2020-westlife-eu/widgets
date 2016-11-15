@@ -5,18 +5,24 @@
 </head>
 <body>
   Get a PDB file, one of these ways:
-<ul>
-  <li>Load from PDB: <input id="pdbid" title="PDB id" placeholder="1r6a"
+<ul ondrop="dropped(event)"
+   ondragover="event.preventDefault(); event.dataTransfer.dropEffect = 'copy';"
+   >
+  <li>
+    <input id="pdbid" title="type PDB id and press enter" placeholder="1r6a"
+    maxlength="4" size="4"
     onchange="loadPdbFile('http://files.rcsb.org/view/'+this.value+'.pdb')"
-  /></li>
-  <li>Load from PDB-REDO: <input id="pdbid" title="PDB id" placeholder="1r6a"
+  />from PDB</li>
+  <li>
+    <input id="pdbid" title="type PDB id and press enter" placeholder="1r6a"
+    maxlength="4" size="4"
     onchange="loadFromRedo(this.value)"
-  /></li>
+  />from PDB-REDO</li>
   <li><input id="fileElem" type="file" onchange="readPdb(this.files[0])" style="display:none" />
-    <label for="fileElem">Browse...</label>
+    <label for="fileElem" style="text-decoration: underline">Browse...</label>
   </li>
+  <li>Drag a file here.</li>
 </ul>
-<div ondrop="dropped(event)">TODO Drag a file here.</div>
 <div id=viewer ></div>
 <a href="http://superuser.com/questions/836832/how-can-i-enable-webgl-in-my-browser">How to enable WebGL</a>
 </body>
@@ -45,10 +51,10 @@ function readPdb(file) {
 function dropped(event) {
   event.stopPropagation();
   event.preventDefault();
-  var dt = event.dataTransfer;
-  var files = dt.files;
-  redPdb(files[0]);
+  var files = event.dataTransfer.files;
+  readPdb(files[0]);
 }
+
 
 // given the contents of a PDB file, show the structure
 function show(pdb) {
